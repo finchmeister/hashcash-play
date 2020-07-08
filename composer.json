@@ -1,8 +1,16 @@
 {
     "require": {
-        "amphp/parallel": "^1.4"
+        "amphp/parallel": "^1.4",
+        "bref/bref": "^0.5.28",
+        "webmozart/assert": "^1.9"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.2"
     },
     "autoload": {
-        "psr-4": {"HashCash\\": "src/"}
+        "psr-4": {
+            "HashCash\\": "src/",
+            "HashCash\\Tests\\": "tests/"
+        }
     }
 }

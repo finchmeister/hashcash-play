@@ -8,7 +8,7 @@ use Amp\Promise;
 
 $start = hrtime(true);
 
-$cost = 20;
+$cost = 15;
 $threads = 8;
 $hasher = new \HashCash\Hasher();
 $challengeString = 'random challenge';
@@ -25,7 +25,7 @@ STRING;
 $promises = [];
 foreach (range(0, $threads - 1) as $thread) {
     $promises[$thread] = Worker\enqueueCallable(
-        [$hasher, 'hash'], $challengeString, $cost, $threads, $thread
+        [$hasher, 'getNonce'], $challengeString, $cost, $threads, $thread
     );
 }
 
@@ -33,8 +33,7 @@ echo PHP_EOL;
 echo PHP_EOL;
 echo 'Not parallel'.PHP_EOL;
 echo '------------'.PHP_EOL;
-$nonce = $hasher->hash($challengeString, $cost);
-$hasher->validate($challengeString, $cost, $nonce);
+$nonce = $hasher->getNonce($challengeString, $cost);
 \printf("Nonce from %d\n", $nonce);
 $nonParallelTime = (hrtime(true) - $start)/1e+9;
 \printf("Time %s\n", $nonParallelTime);

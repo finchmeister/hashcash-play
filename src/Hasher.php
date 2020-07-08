@@ -6,10 +6,10 @@ use Exception;
 
 class Hasher
 {
-    public function hash(string $challengeString, int $cost, int $threads = 1, int $offset = 0)
+    public function getNonce(string $challengeString, int $cost, int $threads = 1, int $offset = 0)
     {
         $i = $nonce = 0;
-        while ($this->startsWithZeros($this->hex2Binary(sha1($challengeString.$nonce)), $cost) === false) {
+        while (Util::startsWithZeros(Util::hex2Binary(sha1($challengeString.$nonce)), $cost) === false) {
             $i++;
             $nonce = ($threads * $i) + $offset;
 //            printf('Nonce %d, offset %d'.PHP_EOL, $nonce, $offset);
@@ -24,22 +24,18 @@ class Hasher
 //        var_dump($this->hex2Binary(sha1($challengeString.$nonce)));
     }
 
-    public function validate(string $challengeString, int $cost, int $nonce)
+    public function hashSatisfiesCost(string $challengeString, int $nonce, int $cost)
     {
-        if ($this->startsWithZeros($this->hex2Binary(sha1($challengeString.$nonce)), $cost) === false) {
-            throw new Exception('Invalid nonce');
-        };
+        return Util::startsWithZeros(
+            Util::hex2Binary(
+                sha1($this->createSubject($challengeString, $nonce))
+            ),
+            $cost
+        );
     }
 
-    public function hex2Binary(string $hex)
+    private function createSubject(string $challengeString, int $nonce): string
     {
-        return implode('', array_map(function ($hex) {
-            return sprintf('%08d', decbin(hexdec($hex)));
-        }, str_split($hex, 2)));
-    }
-
-    public function startsWithZeros(string $string, int $numberOfZeroes)
-    {
-        return strpos($string, str_repeat('0', $numberOfZeroes)) === 0;
+        return $challengeString . $nonce;
     }
 }
