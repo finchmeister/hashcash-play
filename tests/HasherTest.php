@@ -3,6 +3,7 @@
 namespace HashCash\Tests;
 
 use HashCash\Hasher;
+use HashCash\Work;
 use PHPUnit\Framework\TestCase;
 
 class HasherTest extends TestCase
@@ -38,6 +39,117 @@ class HasherTest extends TestCase
             [false, 'random challenge', 588527, 18],
             [true, 'random challenge', 588528, 18],
             [false, 'random challenge', 588529, 18],
+        ];
+    }
+
+
+    /**
+     * @dataProvider data_provider_it_can_get_nonce_from_work
+     */
+    public function test_it_can_get_nonce_from_work(?int $nonce, Work $work)
+    {
+        self::assertSame(
+            $nonce,
+            $this->hasher->getNonceFromWork($work)
+        );
+    }
+
+    public function data_provider_it_can_get_nonce_from_work()
+    {
+        yield [
+            1744,
+            $work = new Work(
+                'test',
+                10,
+                1,
+                0,
+                0,
+                null
+            )
+        ];
+
+        yield [
+            1744,
+            $work = new Work(
+                'test',
+                10,
+                2,
+                0,
+                0,
+                null
+            )
+        ];
+
+        yield [
+            1744,
+            $work = new Work(
+                'test',
+                10,
+                1,
+                0,
+                1744,
+                null
+            )
+        ];
+
+        yield [
+            1962,
+            $work = new Work(
+                'test',
+                10,
+                1,
+                0,
+                1745,
+                null
+            )
+        ];
+
+        yield [
+            2195,
+            $work = new Work(
+                'test',
+                10,
+                2,
+                1,
+                0,
+                null
+            )
+        ];
+
+        yield [
+            1744,
+            $work = new Work(
+                'test',
+                10,
+                1,
+                0,
+                0,
+                1744
+            )
+        ];
+
+        yield [
+            null,
+            $work = new Work(
+                'test',
+                10,
+                1,
+                0,
+                0,
+                1743
+            )
+        ];
+
+        yield [
+            4,
+            $work = new Work(
+                'test174',
+                10,
+                1,
+                0,
+                0,
+                null
+            )
         ];
     }
 }

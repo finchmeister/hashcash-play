@@ -6,6 +6,25 @@ use Exception;
 
 class Hasher
 {
+    public function getNonceFromWork(Work $work): ?int
+    {
+        $i = 1;
+        $nonce = $work->getStart();
+        while (
+            false === $this->hashSatisfiesCost($work->getChallengeString(), $nonce, $work->getCost())
+            && ($work->getIterations() === null || $i < $work->getIterations())
+        ) {
+            $i++;
+            $nonce = ($work->getConcurrency() * $i) + $work->getConcurrencyOffset() + $work->getStart();
+        }
+
+        if ($this->hashSatisfiesCost($work->getChallengeString(), $nonce, $work->getCost())) {
+            return $nonce;
+        }
+
+        return null;
+    }
+
     public function getNonce(string $challengeString, int $cost, int $threads = 1, int $offset = 0)
     {
         $i = $nonce = 0;

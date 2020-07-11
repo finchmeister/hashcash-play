@@ -16,33 +16,95 @@ class WorkGeneratorTest extends TestCase
         $this->workGenerator = new WorkGenerator();
     }
 
-    public function test_it_can_generate_work()
+    public function test_it_can_generate_work_for_single_concurrency()
     {
-        $work1 = new Work(
+        $expectedWorks = [
+            0 => new Work(
+                'test',
+                10,
+                1,
+                0,
+                0,
+                100
+            ),
+            1 => new Work(
+                'test',
+                10,
+                1,
+                0,
+                100,
+                100
+            ),
+        ];
+
+        foreach ($this->workGenerator->generate(
             'test',
             10,
             1,
-            0,
-            0,
             100
-        );
-        $work2 = new Work(
+        ) as $i => $work) {
+            if (isset($expectedWorks[$i]) === false) {
+                break;
+            }
+
+            self::assertEquals(
+                $expectedWorks[$i],
+                $work
+            );
+        }
+    }
+
+    public function test_it_can_generate_work_for_two_concurrency()
+    {
+        $expectedWorks = [
+            0 => new Work(
+                'test',
+                10,
+                2,
+                0,
+                0,
+                100
+            ),
+            1 => new Work(
+                'test',
+                10,
+                2,
+                1,
+                0,
+                100
+            ),
+            2 => new Work(
+                'test',
+                10,
+                2,
+                0,
+                100,
+                100
+            ),
+            3 => new Work(
+                'test',
+                10,
+                2,
+                1,
+                100,
+                100
+            ),
+        ];
+
+        foreach ($this->workGenerator->generate(
             'test',
             10,
-            1,
-            0,
-            101,
+            2,
             100
-        );
+        ) as $i => $work) {
+            if (isset($expectedWorks[$i]) === false) {
+                break;
+            }
 
-//        foreach ($this->workGenerator->generate(
-//            'test',
-//            10,
-//            1,
-//            100
-//        ))
-
-
-//        self::assertSame();
+            self::assertEquals(
+                $expectedWorks[$i],
+                $work
+            );
+        }
     }
 }
