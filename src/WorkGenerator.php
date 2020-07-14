@@ -21,4 +21,19 @@ class WorkGenerator
             $start = $start + $iterationsPerWork;
         } while (true);
     }
+
+    public function getNext(WorkResult $workResult): Work
+    {
+        $previousWork = $workResult->getWork();
+
+        return new Work(
+            $previousWork->getChallengeString(),
+            $previousWork->getCost(),
+            $previousWork->getConcurrency(),
+            $previousWork->getConcurrencyOffset(),
+            $workResult->getLastNonce() + 1,
+            $previousWork->getTimeout(),
+            $previousWork->getChainId() + 1,
+        );
+    }
 }

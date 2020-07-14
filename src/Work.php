@@ -6,20 +6,26 @@ use Assert\Assertion;
 use Webmozart\Assert\Assert;
 
 class Work {
+    private const DEFAULT_START = 0;
+    private const DEFAULT_TIMEOUT = 6000000;
+    private const DEFAULT_CHAIN_ID = 1;
+
     private string $challengeString;
     private int $cost;
     private int $concurrency;
     private int $concurrencyOffset;
     private int $start;
-    private ?int $iterations;
+    private int $timeout;
+    private int $chainId;
 
     public function __construct(
         string $challengeString,
         int $cost,
         int $concurrency,
         int $concurrencyOffset,
-        int $start = 0,
-        ?int $iterations = null
+        int $start = self::DEFAULT_START,
+        int $timeout = self::DEFAULT_TIMEOUT,
+        int $chainId = self::DEFAULT_CHAIN_ID
     ) {
         $this->challengeString = $challengeString;
 
@@ -33,7 +39,21 @@ class Work {
         Assert::lessThan($concurrencyOffset, $concurrency);
         $this->concurrencyOffset = $concurrencyOffset;
         $this->start = $start;
-        $this->iterations = $iterations;
+        $this->timeout = $timeout;
+        $this->chainId = $chainId;
+    }
+
+    public static function fromArray(array $array): self
+    {
+        return new self(
+            $array['challengeString'],
+            $array['cost'],
+            $array['concurrency'],
+            $array['concurrencyOffset'],
+            $array['start'] ?? self::DEFAULT_START,
+            $array['timeout'] ?? self::DEFAULT_TIMEOUT,
+            $array['chainId'] ?? self::DEFAULT_CHAIN_ID,
+        );
     }
 
     public function getChallengeString(): string
@@ -61,8 +81,26 @@ class Work {
         return $this->start;
     }
 
-    public function getIterations(): ?int
+    public function getTimeout(): int
     {
-        return $this->iterations;
+        return $this->timeout;
+    }
+
+    public function getChainId(): int
+    {
+        return $this->chainId;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'challengeString' => $this->challengeString,
+            'cost' => $this->cost,
+            'concurrency' => $this->concurrency,
+            'concurrencyOffset' => $this->concurrencyOffset,
+            'start' => $this->start,
+            'timeout' => $this->timeout,
+            'chainId' => $this->chainId,
+        ];
     }
 }

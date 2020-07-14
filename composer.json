@@ -2,10 +2,13 @@
     "require": {
         "amphp/parallel": "^1.4",
         "bref/bref": "^0.5.28",
-        "webmozart/assert": "^1.9"
+        "webmozart/assert": "^1.9",
+        "async-aws/sqs": "^1.2",
+        "async-aws/lambda": "^1.0",
+        "aws/aws-sdk-php": "^3.145"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.2"
+        "phpunit/phpunit": "^8"
     },
     "autoload": {
         "psr-4": {

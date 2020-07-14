@@ -6,15 +6,13 @@ $cost = 16;
 $hasher = new \HashCash\Hasher();
 $challengeString = 'random challenge';
 
-$hashRunner = new \HashCash\HashRunner($hasher);
-
 $work = new \HashCash\Work(
     'test',
     10,
     1,
     0,
-    1963,
-    null
+    0,
+    10
 );
 
-var_dump($hashRunner->hashRunner($work));
+var_dump($hasher->doWork($work)->toArray());

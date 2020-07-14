@@ -6,13 +6,15 @@ use Exception;
 
 class Hasher
 {
+    public const TIMEOUT_BUFFER = 5;
+
     public function getNonceFromWork(Work $work): ?int
     {
         $i = 1;
         $nonce = $work->getStart();
         while (
             false === $this->hashSatisfiesCost($work->getChallengeString(), $nonce, $work->getCost())
-            && ($work->getIterations() === null || $i < $work->getIterations())
+            && ($work->getTimeout() === null || $i < $work->getTimeout())
         ) {
             $i++;
             $nonce = ($work->getConcurrency() * $i) + $work->getConcurrencyOffset() + $work->getStart();
@@ -25,29 +27,54 @@ class Hasher
         return null;
     }
 
+    public function doWork(Work $work): WorkResult
+    {
+        $startTime = microtime(true);
+        $i = 1;
+        $nonce = $work->getStart();
+        while (
+            false === $this->hashSatisfiesCost($work->getChallengeString(), $nonce, $work->getCost())
+            && ((microtime(true) + self::TIMEOUT_BUFFER - $startTime) < $work->getTimeout())
+        ) {
+            $i++;
+            $nonce = ($work->getConcurrency() * $i) + $work->getConcurrencyOffset() + $work->getStart();
+        }
+
+        if ($this->hashSatisfiesCost($work->getChallengeString(), $nonce, $work->getCost())) {
+
+            return WorkResult::successful(
+                $work,
+                $nonce,
+                $i,
+                (microtime(true) - $startTime),
+                $this->getHash($work->getChallengeString(), $nonce)
+            );
+        }
+
+        return WorkResult::unSuccessful($work, $nonce, $i, (microtime(true) - $startTime));
+    }
+
     public function getNonce(string $challengeString, int $cost, int $threads = 1, int $offset = 0)
     {
         $i = $nonce = 0;
-        while (Util::startsWithZeros(Util::hex2Binary(sha1($challengeString.$nonce)), $cost) === false) {
+        while (Util::startsWithZeros(Util::hex2Binary($this->getHash($challengeString, $nonce)), $cost) === false) {
             $i++;
             $nonce = ($threads * $i) + $offset;
-//            printf('Nonce %d, offset %d'.PHP_EOL, $nonce, $offset);
         }
 
         return $nonce;
+    }
 
-//        var_dump('Time ' . (hrtime(true) - $start)/1e+9);
-//        var_dump($nonce);
-//        var_dump($i);
-//        var_dump(sha1($challengeString.$nonce));
-//        var_dump($this->hex2Binary(sha1($challengeString.$nonce)));
+    public function getHash(string $challengeString, int $nonce): string
+    {
+        return sha1($this->createSubject($challengeString, $nonce));
     }
 
     public function hashSatisfiesCost(string $challengeString, int $nonce, int $cost)
     {
         return Util::startsWithZeros(
             Util::hex2Binary(
-                sha1($this->createSubject($challengeString, $nonce))
+                $this->getHash($challengeString, $nonce)
             ),
             $cost
         );

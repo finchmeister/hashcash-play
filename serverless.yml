@@ -4,6 +4,8 @@ provider:
     name: aws
     region: eu-west-2
     runtime: provided
+    timeout: 60
+    memorySize: 2048
 
 plugins:
     - ./vendor/bref/bref
@@ -13,7 +15,7 @@ functions:
         handler: index.php
         description: ''
         layers:
-            - ${bref:layer.php-73}
+            - ${bref:layer.php-74}
 
 # Exclude files from deployment
 package:

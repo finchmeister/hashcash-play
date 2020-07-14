@@ -8,10 +8,10 @@ use Amp\Promise;
 
 $start = hrtime(true);
 
-$cost = 15;
+$cost = 20;
 $threads = 8;
 $hasher = new \HashCash\Hasher();
-$challengeString = 'random challenge';
+$challengeString = 'challenge';
 
 echo <<<STRING
 Benchmark
@@ -48,7 +48,6 @@ $responses = Promise\wait(Promise\first($promises));
 
 foreach ((array) $responses as $thread => $nonce) {
     \printf("Thread %d , nonce from %d\n", $thread, $nonce);
-    $hasher->validate($challengeString, $cost, $nonce);
 }
 $parallelTime = (hrtime(true) - $start)/1e+9;
 
