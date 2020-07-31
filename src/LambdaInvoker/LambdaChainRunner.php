@@ -1,13 +1,14 @@
 <?php declare(strict_types=1);
 
-namespace HashCash;
+namespace HashCash\LambdaInvoker;
+
+use HashCash\Work\Work;
+use HashCash\Work\WorkGenerator;
+use HashCash\Work\WorkResult;
 
 class LambdaChainRunner
 {
     private LambdaInvokerInterface $lambdaInvoker;
-    /**
-     * @var WorkGenerator
-     */
     private WorkGenerator $workGenerator;
 
     public function __construct(

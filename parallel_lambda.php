@@ -11,11 +11,11 @@ $config = \AsyncAws\Core\Configuration::create([
     'region' => 'eu-west-2',
 ]);
 $lambdaClient = new LambdaClient($config);
-$workGenerator = new \HashCash\WorkGenerator();
-$lambdaInvoker = new \HashCash\AwsAsyncLambdaInvoker($lambdaClient);
-$lambdaInvoker = new \HashCash\AwsLambdaInvoker();
-$lambdaInvoker = new \HashCash\ExecLambdaInvoker();
-$lambdaChainRunner = new \HashCash\LambdaChainRunner(
+$workGenerator = new \HashCash\Work\WorkGenerator();
+$lambdaInvoker = new \HashCash\LambdaInvoker\AwsAsyncLambdaInvoker($lambdaClient);
+$lambdaInvoker = new \HashCash\LambdaInvoker\AwsLambdaInvoker();
+$lambdaInvoker = new \HashCash\LambdaInvoker\ExecLambdaInvoker();
+$lambdaChainRunner = new \HashCash\LambdaInvoker\LambdaChainRunner(
     $lambdaInvoker,
     $workGenerator
 );
@@ -42,7 +42,7 @@ if ($testSerial) {
     echo PHP_EOL;
     echo 'Not parallel'.PHP_EOL;
     echo '------------'.PHP_EOL;
-    $workResult = $lambdaChainRunner->run(new \HashCash\Work(
+    $workResult = $lambdaChainRunner->run(new \HashCash\Work\Work(
         $challengeString,
         $cost,
         1,
@@ -55,7 +55,7 @@ if ($testSerial) {
 
 $promises = [];
 foreach (range(0, $concurrency - 1) as $concurrencyOffset) {
-    $work = new \HashCash\Work(
+    $work = new \HashCash\Work\Work(
         $challengeString,
         $cost,
         $concurrency,
@@ -74,7 +74,7 @@ echo '------------'.PHP_EOL;
 
 $start = hrtime(true);
 
-/** @var \HashCash\WorkResult $response */
+/** @var \HashCash\Work\WorkResult $response */
 $workResult = Promise\wait(Promise\first($promises));
 var_dump($workResult);
 

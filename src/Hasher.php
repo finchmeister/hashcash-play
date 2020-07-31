@@ -2,7 +2,8 @@
 
 namespace HashCash;
 
-use Exception;
+use HashCash\Work\Work;
+use HashCash\Work\WorkResult;
 
 class Hasher
 {
@@ -70,7 +71,7 @@ class Hasher
         return sha1($this->createSubject($challengeString, $nonce));
     }
 
-    public function hashSatisfiesCost(string $challengeString, int $nonce, int $cost)
+    public function hashSatisfiesCost(string $challengeString, int $nonce, int $cost): bool
     {
         return Util::startsWithZeros(
             Util::hex2Binary(
