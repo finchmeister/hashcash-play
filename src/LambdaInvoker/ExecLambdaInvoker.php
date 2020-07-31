@@ -1,7 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace HashCash;
+namespace HashCash\LambdaInvoker;
 
+use HashCash\Work\Work;
+use HashCash\Work\WorkResult;
 
 class ExecLambdaInvoker implements LambdaInvokerInterface
 {

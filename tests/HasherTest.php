@@ -3,7 +3,7 @@
 namespace HashCash\Tests;
 
 use HashCash\Hasher;
-use HashCash\Work;
+use HashCash\Work\Work;
 use PHPUnit\Framework\TestCase;
 
 class HasherTest extends TestCase
@@ -54,102 +54,49 @@ class HasherTest extends TestCase
         );
     }
 
-    public function data_provider_it_can_get_nonce_from_work()
+    public function data_provider_it_can_get_nonce_from_work(): array
     {
-        yield [
-            1744,
-            $work = new Work(
-                'test',
-                10,
-                1,
-                0,
-                0,
-                null
-            )
-        ];
-
-        yield [
-            1744,
-            $work = new Work(
-                'test',
-                10,
-                2,
-                0,
-                0,
-                null
-            )
-        ];
-
-        yield [
-            1744,
-            $work = new Work(
-                'test',
-                10,
-                1,
-                0,
+        return [
+            'normal' => [
                 1744,
-                null
-            )
-        ];
-
-        yield [
-            1962,
-            $work = new Work(
-                'test',
-                10,
-                1,
-                0,
-                1745,
-                null
-            )
-        ];
-
-        yield [
-            2195,
-            $work = new Work(
-                'test',
-                10,
-                2,
-                1,
-                0,
-                null
-            )
-        ];
-
-        yield [
-            1744,
-            $work = new Work(
-                'test',
-                10,
-                1,
-                0,
-                0,
-                1744
-            )
-        ];
-
-        yield [
-            null,
-            $work = new Work(
-                'test',
-                10,
-                1,
-                0,
-                0,
-                1743
-            )
-        ];
-
-        yield [
-            4,
-            $work = new Work(
-                'test174',
-                10,
-                1,
-                0,
-                0,
-                null
-            )
+                $work = new Work(
+                    'test',
+                    10,
+                    1,
+                    0,
+                    0
+                )
+            ],
+            '2 concurrency, even offset' => [
+                1744,
+                $work = new Work(
+                    'test',
+                    10,
+                    2,
+                    0,
+                    0
+                )
+            ],
+            'start beyond first hit' => [
+                1962,
+                $work = new Work(
+                    'test',
+                    10,
+                    1,
+                    0,
+                    1745
+                )
+            ],
+            '2 concurrency, odd offset' => [
+                2195,
+                $work = new Work(
+                    'test',
+                    10,
+                    2,
+                    1,
+                    0
+                )
+            ]
         ];
     }
 }

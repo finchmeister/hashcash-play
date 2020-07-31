@@ -1,8 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace HashCash;
+namespace HashCash\LambdaInvoker;
 
 use AsyncAws\Lambda\LambdaClient;
+use HashCash\Work\Work;
+use HashCash\Work\WorkResult;
 
 class AwsAsyncLambdaInvoker implements LambdaInvokerInterface
 {

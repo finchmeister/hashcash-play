@@ -12,7 +12,7 @@ plugins:
 
 functions:
     function:
-        handler: index.php
+        handler: public/lambda.php
         description: ''
         layers:
             - ${bref:layer.php-74}

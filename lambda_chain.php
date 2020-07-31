@@ -8,9 +8,9 @@ $config = \AsyncAws\Core\Configuration::create([
     'region' => 'eu-west-2',
 ]);
 $lambdaClient = new LambdaClient($config);
-$workGenerator = new \HashCash\WorkGenerator();
-$lambdaInvoker = new \HashCash\AwsAsyncLambdaInvoker($lambdaClient);
-$lambdaChainRunner = new \HashCash\LambdaChainRunner(
+$workGenerator = new \HashCash\Work\WorkGenerator();
+$lambdaInvoker = new \HashCash\LambdaInvoker\AwsAsyncLambdaInvoker($lambdaClient);
+$lambdaChainRunner = new \HashCash\LambdaInvoker\LambdaChainRunner(
     $lambdaInvoker,
     $workGenerator
 );
@@ -23,6 +23,6 @@ $payload = [
     'timeout' => 60,
 ];
 
-$workResult = $lambdaChainRunner->run(\HashCash\Work::fromArray($payload));
+$workResult = $lambdaChainRunner->run(\HashCash\Work\Work::fromArray($payload));
 
 var_dump($workResult);

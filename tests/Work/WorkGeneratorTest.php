@@ -1,7 +1,6 @@
 <?php
 
-namespace HashCash\Tests;
-
+namespace HashCash\Tests\Work;
 
 use HashCash\Work\Work;
 use HashCash\Work\WorkGenerator;

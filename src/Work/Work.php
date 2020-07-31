@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace HashCash;
+namespace HashCash\Work;
 
 use Assert\Assertion;
 use Webmozart\Assert\Assert;

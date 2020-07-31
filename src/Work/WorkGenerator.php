@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace HashCash;
+namespace HashCash\Work;
 
 class WorkGenerator
 {
@@ -18,7 +18,7 @@ class WorkGenerator
                     $iterationsPerWork
                 );
             }
-            $start = $start + $iterationsPerWork;
+            $start += $iterationsPerWork;
         } while (true);
     }
 

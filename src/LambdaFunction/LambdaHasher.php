@@ -1,6 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace HashCash;
+namespace HashCash\LambdaFunction;
+
+use HashCash\Hasher;
+use HashCash\Work\Work;
 
 class LambdaHasher
 {

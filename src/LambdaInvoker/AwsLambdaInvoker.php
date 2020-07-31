@@ -1,9 +1,11 @@
 <?php declare(strict_types=1);
 
-namespace HashCash;
+namespace HashCash\LambdaInvoker;
 
 
 use Aws\Lambda\LambdaClient;
+use HashCash\Work\Work;
+use HashCash\Work\WorkResult;
 
 class AwsLambdaInvoker implements LambdaInvokerInterface
 {
@@ -11,7 +13,7 @@ class AwsLambdaInvoker implements LambdaInvokerInterface
 
     public function __construct(
     ) {
-        $this->lambdaClient = $client = new LambdaClient([
+        $this->lambdaClient = new LambdaClient([
             'region' => 'eu-west-2',
             'version' => '2015-03-31',
         ]);

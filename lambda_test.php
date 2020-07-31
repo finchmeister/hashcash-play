@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-$lambdaInvoker = new \HashCash\ExecLambdaInvoker();
+$lambdaInvoker = new \HashCash\LambdaInvoker\ExecLambdaInvoker();
 
 $payload = [
     'challengeString' => 'challenge',
@@ -13,6 +13,6 @@ $payload = [
     'timeout' => 60,
 ];
 
-$workResult = $lambdaInvoker->invoke(\HashCash\Work::fromArray($payload));
+$workResult = $lambdaInvoker->invoke(\HashCash\Work\Work::fromArray($payload));
 
 var_dump($workResult);
