@@ -44,17 +44,17 @@ class HasherTest extends TestCase
 
 
     /**
-     * @dataProvider data_provider_it_can_get_nonce_from_work
+     * @dataProvider data_provider_it_can_do_work
      */
-    public function test_it_can_get_nonce_from_work(?int $nonce, Work $work)
+    public function test_it_can_do_work(?int $nonce, Work $work)
     {
         self::assertSame(
             $nonce,
-            $this->hasher->getNonceFromWork($work)
+            $this->hasher->doWork($work)->getLastNonce()
         );
     }
 
-    public function data_provider_it_can_get_nonce_from_work(): array
+    public function data_provider_it_can_do_work(): array
     {
         return [
             'normal' => [

@@ -9,6 +9,9 @@ class Hasher
 {
     public const TIMEOUT_BUFFER = 5;
 
+    /**
+     * @deprecated
+     */
     public function getNonceFromWork(Work $work): ?int
     {
         $i = 1;

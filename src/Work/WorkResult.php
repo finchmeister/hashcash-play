@@ -91,6 +91,11 @@ class WorkResult
         return $this->hash;
     }
 
+    public function iterationsPerSecond(): float
+    {
+        return round($this->iterations/$this->timeTaken, 2);
+    }
+
     public function toArray(): array
     {
         return [
@@ -100,6 +105,7 @@ class WorkResult
             'iterations' => $this->iterations,
             'timeTaken' => $this->timeTaken,
             'hash' => $this->hash,
+            'iterationsPerSec' => $this->iterationsPerSecond(),
         ];
     }
 

@@ -5,7 +5,7 @@ namespace HashCash\LambdaFunction;
 use HashCash\Hasher;
 use HashCash\Work\Work;
 
-class LambdaHasher
+class LambdaHasher implements LambdaHasherInterface
 {
     private Hasher $hasher;
 
@@ -18,7 +18,7 @@ class LambdaHasher
     {
         $work = Work::fromArray($event);
         $workResult = $this->hasher->doWork($work);
+
         return json_encode($workResult->toArray());
     }
-
 }

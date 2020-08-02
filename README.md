@@ -1,4 +1,10 @@
 
+
+Benchmark
+```
+./vendor/bin/phpbench run src/Benchmark/HashBench.php 
+```
+
 ```
 $payload = json_encode([
     'challengeString' => 'challenge',

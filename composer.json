@@ -19,6 +19,7 @@
         "aws/aws-sdk-php": "^3.145"
     },
     "require-dev": {
+        "phpbench/phpbench": "@dev",
         "symfony/browser-kit": "^5.1",
         "symfony/css-selector": "^5.1",
         "symfony/phpunit-bridge": "^5.1"
