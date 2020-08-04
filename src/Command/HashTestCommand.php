@@ -27,8 +27,8 @@ class HashTestCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $cost = 16;
-        $challengeString = 'random challenge';
+        $cost = 15;
+        $challengeString = 'challenge';
 
         $work = new Work(
             $challengeString,
@@ -36,7 +36,7 @@ class HashTestCommand extends Command
             1,
             0,
             0,
-            10
+            60
         );
 
         var_dump($this->hasher->doWork($work)->toArray());

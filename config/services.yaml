@@ -11,8 +11,10 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-            - '../src/Tests/'
 
     HashCash\Controller\:
         resource: '../src/Controller/'
         tags: ['controller.service_arguments']
+
+    HashCash\LambdaInvoker\LambdaInvokerInterface:
+        class: HashCash\LambdaInvoker\ExecLambdaInvoker

@@ -5,59 +5,39 @@ namespace HashCash\Command;
 use Amp\Parallel\Worker;
 use Amp\Promise;
 use HashCash\LambdaInvoker\LambdaChainRunner;
+use HashCash\Work\Work;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ParallelLambdaTestCommand extends Command
 {
-    protected static $defaultName = 'hc:test:parallel';
+    protected static $defaultName = 'hc:test:lambda-parallel';
+
+    private LambdaChainRunner $lambdaChainRunner;
+
+    public function __construct(LambdaChainRunner $lambdaChainRunner)
+    {
+        $this->lambdaChainRunner = $lambdaChainRunner;
+        parent::__construct(null);
+    }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $workGenerator = new \HashCash\Work\WorkGenerator();
-        $lambdaInvoker = new \HashCash\LambdaInvoker\ExecLambdaInvoker();
-        $lambdaChainRunner = new LambdaChainRunner(
-            $lambdaInvoker,
-            $workGenerator
-        );
-
-        $start = hrtime(true);
-
         $challengeString = 'challenge';
         $cost = 30;
-        $concurrency = 25;
-        $start = 0;
-        $timeout = 60;
-        $testSerial = false;
+        $concurrency = 32;
 
-        echo <<<STRING
-Benchmark
+        $output->writeln("Benchmark
 ---------
 Cost: {$cost}
 Concurrency: {$concurrency}
 Challenge String: {$challengeString}
-STRING;
-
-        if ($testSerial) {
-            echo PHP_EOL;
-            echo PHP_EOL;
-            echo 'Not parallel'.PHP_EOL;
-            echo '------------'.PHP_EOL;
-            $workResult = $lambdaChainRunner->run(new \HashCash\Work\Work(
-                $challengeString,
-                $cost,
-                1,
-                0
-            ));
-            \printf("Nonce from %d\n", $workResult->getLastNonce());
-            $nonParallelTime = (hrtime(true) - $start)/1e+9;
-            \printf("Time %s\n", $nonParallelTime);
-        }
+");
 
         $promises = [];
         foreach (range(0, $concurrency - 1) as $concurrencyOffset) {
-            $work = new \HashCash\Work\Work(
+            $work = new Work(
                 $challengeString,
                 $cost,
                 $concurrency,
@@ -66,28 +46,19 @@ STRING;
                 60
             );
             $promises[$concurrencyOffset] = Worker\enqueueCallable(
-                [$lambdaChainRunner, 'run'], $work
+                [$this->lambdaChainRunner, 'run'], $work
             );
         }
 
-        echo PHP_EOL;
-        \printf("Parallel with %s threads\n", $concurrency);
-        echo '------------'.PHP_EOL;
-
         $start = hrtime(true);
 
-        /** @var \HashCash\Work\WorkResult $response */
+        /** @var \HashCash\Work\WorkResult $workResult */
         $workResult = Promise\wait(Promise\first($promises));
-        var_dump($workResult);
+        var_dump($workResult->toArray());
 
-//foreach ((array) $responses as $concurrencyOffset => $workResult) {
-//    \printf("Thread %d , nonce from %d\n", $concurrencyOffset, $workResult->getLastNonce());
-//}
         $parallelTime = (hrtime(true) - $start)/1e+9;
 
-        \printf("Time %s\n", $parallelTime);
-        echo PHP_EOL;
-//printf("Parallel %sx faster \n", round($nonParallelTime/$parallelTime, 4));
+        $output->writeln(\printf("Time %s\n", $parallelTime));
 
         return Command::SUCCESS;
     }

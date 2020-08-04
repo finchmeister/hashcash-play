@@ -1,4 +1,14 @@
+# Hashcash Play
 
+```
+serverless deploy
+```
+
+
+Local testing disable extensions
+```
+php -n bin/console hc:test:hash
+```
 
 Benchmark
 ```
@@ -96,4 +106,72 @@ Time 763.90770803
 
 php parallel_lambda.php  10.57s user 2.65s system 1% cpu 13:09.45 total
 
+```
+
+### Optimum Lambda Size
+```
+[
+     'challengeString' => 'challenge',
+     'cost' => 15,
+     'concurrency' => 1,
+     'concurrencyOffset' => 0,
+     'start' => 0,
+     'timeout' => 60,
+];
+```
+
+| H/s   | Lambda Memory |
+|----   |----|
+| 512   | 26476.29 | 
+| 1024  | 52665.6 | 
+| 1536  | 78818.7 | 
+| 1536  | 83483.01 | 
+| 1792  | 91882.6 | 
+| 1984  | 92778.15 | 
+| 2048  | 92505.3 | 
+| 2560  | 92495.69 | 
+| 3008  | 93105.08 | 
+
+
+50 concurrency although only 32 seemed to be running at a time
+```
+➜  hashcash-play git:(master) ✗ php -n bin/console hc:test:lambda-parallel
+Benchmark
+---------
+Cost: 30
+Concurrency: 50
+Challenge String: challenge
+
+array(7) {
+  ["success"]=>
+  bool(true)
+  ["work"]=>
+  array(7) {
+    ["challengeString"]=>
+    string(9) "challenge"
+    ["cost"]=>
+    int(30)
+    ["concurrency"]=>
+    int(50)
+    ["concurrencyOffset"]=>
+    int(26)
+    ["start"]=>
+    int(1537960012)
+    ["timeout"]=>
+    int(60)
+    ["chainId"]=>
+    int(7)
+  }
+  ["lastNonce"]=>
+  int(1727504938)
+  ["iterations"]=>
+  int(3790898)
+  ["timeTaken"]=>
+  float(40.62677192688)
+  ["hash"]=>
+  string(40) "0000000250534c17158cd8738cbd37852a9a4f4b"
+  ["iterationsPerSec"]=>
+  float(93310.34)
+}
+Time 438.677689258
 ```
